@@ -6,26 +6,61 @@ class View{
         this.drawBoard();
     }
 
+    addPuyo = puyo => this.puyoArr.push(puyo);
+
+    fallingPuyos = arr => this.puyoArr = arr;
+
+    addMultPuyo = multPuyo =>
+    {   
+        this.puyoArr.push(multPuyo.mainPiece);
+        this.puyoArr.push(multPuyo.subPiece);
+    }
+
+    emptyArray = () => this.puyoArr.length = 0;
+
     drawBoard = () =>
     {
         for(var i = 0; i<BOARD_WIDTH;i++)
         {
             for(var j = 0; j<BOARD_HEIGHT;j++)
             {
+                let color = this.board.table[j][i] 
+                console.log(color);
+                if(color != PUYO_TYPE.EMPTY)
+                {
+                    let puyo = new Puyo(this.board.table[j][i])
+                    puyo.setPos(i,j);
+                    this.drawPuyo(puyo,STAGE);
+                }
                 STAGE.strokeRect(i*PUYO_SIZE,j*PUYO_SIZE,PUYO_SIZE,PUYO_SIZE)
             }
         }
     }
 
-    cycle()
+    moveCycle = () =>
     {
         SPRITE.clearRect(0,0,1024,786);
         for(let puyo of this.puyoArr)
         {
             puyo.move();
-            puyo.fall();
-            this.drawPuyo(puyo, ANIMATION)
+            this.drawPuyo(puyo, SPRITE)
         }
+    }
+
+    fallCycle = () =>
+    {
+        let counter = 0;
+        SPRITE.clearRect(0,0,1024,786);
+        for(let x = 0; x<BOARD_WIDTH;x++)
+        {
+            let height = this.board.getHeight(x); 
+            for(let puyo of this.puyoArr[x])
+            {
+                if(puyo.fall(height)) counter++;
+                this.drawPuyo(puyo, SPRITE)
+            }    
+        }
+        return counter>0
     }
 
     drawPuyo = (puyo, ctx) =>

@@ -49,6 +49,21 @@ const PUYO_STATE = Object.freeze(
     }
 );
 
+const PHASE = 
+{
+    DROP: 0,
+    LOCK: 1,
+    FALL: 2,
+    FALL_ANIMATION: 3,
+    POP: 4,
+    POP_ANIMATION:5,
+    NEW_PUYO:6,
+
+
+    GAME_OVER:99
+}
+
+
 const XY_OFFSETS = Object.freeze(
     [
         [ 0,-1],

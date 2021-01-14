@@ -11,7 +11,7 @@ class Puyo{
     initPos = () =>
     {
         this.x = 2;
-        this.y = -1;
+        this.y = 0;
         this.gX = this.x*PUYO_SIZE//Graphic X
         this.gY = this.y*PUYO_SIZE
     }
@@ -26,6 +26,8 @@ class Puyo{
     {
         this.x = x;
         this.y = y;
+        this.gX = x*PUYO_SIZE;
+        this.gY = y*PUYO_SIZE;
     }
 
     /**
@@ -49,11 +51,14 @@ class Puyo{
     move()
     {
         let dx = (this.x * PUYO_SIZE - this.gX) * 0.25 | 0;
+        let dy = (this.y * PUYO_SIZE - this.gY) * 0.25 | 0;
         
         if(dx == 0)
-        {
             this.gX = this.x * PUYO_SIZE;
-        }
+        if(dy == 0)
+            this.gY = this.y * PUYO_SIZE;
+
         this.gX += dx;
+        this.gY += dy;
     }
 }
