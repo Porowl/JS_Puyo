@@ -55,9 +55,10 @@ const PHASE =
     LOCK: 1,
     FALL: 2,
     FALL_ANIMATION: 3,
-    POP: 4,
-    POP_ANIMATION:5,
-    NEW_PUYO:6,
+    FALL_ANIMATION_END: 4,
+    POP: 5,
+    POP_ANIMATION:6,
+    NEW_PUYO:7,
 
 
     GAME_OVER:99
@@ -78,7 +79,7 @@ const DIRECTION = Object.freeze(
         NONE:  [0,0],
         LEFT:  [-1,0],
         RIGHT: [1,0],
-        DOWN:  [0,1],
+        DOWN:  [0,1]
     }
 );
 

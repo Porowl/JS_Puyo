@@ -12,27 +12,27 @@ class View{
 
     addMultPuyo = multPuyo =>
     {   
-        this.puyoArr.push(multPuyo.mainPiece);
-        this.puyoArr.push(multPuyo.subPiece);
+        this.puyoArr = multPuyo;
     }
 
     emptyArray = () => this.puyoArr.length = 0;
 
+    getPuyoArr = () => this.puyoArr;
+
     drawBoard = () =>
     {
+        STAGE.clearRect(0,0,1024,786)
         for(var i = 0; i<BOARD_WIDTH;i++)
         {
-            for(var j = 0; j<BOARD_HEIGHT;j++)
+            for(var j = 1; j<BOARD_HEIGHT;j++)
             {
                 let color = this.board.table[j][i] 
-                console.log(color);
                 if(color != PUYO_TYPE.EMPTY)
                 {
-                    let puyo = new Puyo(this.board.table[j][i])
-                    puyo.setPos(i,j);
-                    this.drawPuyo(puyo,STAGE);
+                    let color = this.board.table[j][i]
+                    this.drawPuyoByPointer(i,j-1,color,STAGE);
                 }
-                STAGE.strokeRect(i*PUYO_SIZE,j*PUYO_SIZE,PUYO_SIZE,PUYO_SIZE)
+                STAGE.strokeRect(i*PUYO_SIZE,(j-1)*PUYO_SIZE,PUYO_SIZE,PUYO_SIZE)
             }
         }
     }
@@ -40,11 +40,15 @@ class View{
     moveCycle = () =>
     {
         SPRITE.clearRect(0,0,1024,786);
-        for(let puyo of this.puyoArr)
-        {
-            puyo.move();
-            this.drawPuyo(puyo, SPRITE)
-        }
+        
+        let main = this.puyoArr.mainPiece
+        let sub = this.puyoArr.subPiece
+        
+        main.move();
+        sub.move();
+
+        this.drawPuyo(main, SPRITE);
+        this.drawPuyo(sub, SPRITE);
     }
 
     fallCycle = () =>
@@ -53,16 +57,16 @@ class View{
         SPRITE.clearRect(0,0,1024,786);
         for(let x = 0; x<BOARD_WIDTH;x++)
         {
-            let height = this.board.getHeight(x); 
             for(let puyo of this.puyoArr[x])
             {
-                if(puyo.fall(height)) counter++;
-                this.drawPuyo(puyo, SPRITE)
+                if(puyo){
+                    if(!puyo.fall()) counter++;
+                    this.drawPuyo(puyo, SPRITE)    
+                }
             }    
         }
         return counter>0
     }
-
     drawPuyo = (puyo, ctx) =>
     {
         let type = puyo.type;
@@ -80,10 +84,35 @@ class View{
             PUYO_SIZE,              //s Width
             PUYO_SIZE,              //s Height
             puyo.gX,       //dX
-            puyo.gY,       //dY
+            puyo.gY-PUYO_SIZE,       //dY
             PUYO_SIZE,              //dW
             PUYO_SIZE               //dH
         )
     }
 
+    drawPuyoByPointer = (x,y,color, ctx) =>
+    {
+        let type = color;
+
+        let state = PUYO_STATE.N;
+
+        if(type==PUYO_TYPE.EMPTY) return;
+        if(type==PUYO_TYPE.TRASH)
+        {
+            type = 6;
+            state = 12;
+        }
+
+        ctx.drawImage( 
+            SPRITE_IMAGE,           //Source
+            state*PUYO_SIZE,        //sX
+            type*PUYO_SIZE,         //sY
+            PUYO_SIZE,              //s Width
+            PUYO_SIZE,              //s Height
+            x*PUYO_SIZE,       //dX
+            y*PUYO_SIZE,       //dY
+            PUYO_SIZE,              //dW
+            PUYO_SIZE               //dH
+        )
+    }
 }

@@ -29,7 +29,7 @@ class PuyoPlayer{
                     {
                         this.Puyo.move(1,0);
                     }
-                },0)    
+                },0)
             }
             //this.Stats.keyMap[event.keyCode] = true;
         });
@@ -42,14 +42,14 @@ class PuyoPlayer{
 
     cycle = () =>
     {
-        console.log(this.phase);
+        console.log(`Current Phase is: ${this.phase}`);
         switch(this.phase)
         {
             case PHASE.DROP:
             {
                 this.View.moveCycle();
                 this.frame++;
-                if(this.frame%15===0)
+                if(this.frame%20===0)
                 {
                     if(this.Board.valid(this.Puyo.getPos(DIRECTION.DOWN)))
                         this.Puyo.move(0,1);
@@ -73,19 +73,31 @@ class PuyoPlayer{
             case PHASE.FALL:
             {
                 let array = this.Board.fall();
+                this.View.drawBoard();
                 this.View.fallingPuyos(array);
                 this.phase++;
                 break;
             }
             case PHASE.FALL_ANIMATION:
             {
-                console.log(this.View.puyoArr);
-                break;
-                this.View.fallCycle();
-                this.phase++;
+                if(!this.View.fallCycle()) this.phase++;
                 break;
             }
+            case PHASE.FALL_ANIMATION_END:
+            {
+                let arr = this.View.getPuyoArr();
 
+                for(let x = 0; x<BOARD_WIDTH;x++)
+                {
+                    for(let puyo of arr[x])
+                    {
+                        this.Board.lockSingle(puyo);
+                    }
+                }
+                this.View.emptyArray();
+                this.View.drawBoard();
+                this.phase++;
+            }
             case PHASE.POP:
             {
                 this.phase++;

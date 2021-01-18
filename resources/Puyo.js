@@ -5,6 +5,8 @@ class Puyo{
         this.initPos();
         this.velocity = 0;
         this.remove = false;
+        this.onRotate = false;
+        this.angle = 0;
         this.state = PUYO_STATE.N;
     }
 
@@ -12,8 +14,9 @@ class Puyo{
     {
         this.x = 2;
         this.y = 0;
-        this.gX = this.x*PUYO_SIZE//Graphic X
+        this.gX = this.x*PUYO_SIZE //Graphic X
         this.gY = this.y*PUYO_SIZE
+        this.limit = BOARD_HEIGHT;
     }
 
     movePos = (x,y) =>
@@ -30,10 +33,15 @@ class Puyo{
         this.gY = y*PUYO_SIZE;
     }
 
+    setLimit = y =>
+    {
+        this.limit = y;
+    }
+
     /**
      * Returns true if fall completed;
      */
-    fall = (bottom = BOARD_HEIGHT*PUYO_SIZE) =>
+    fall = (bottom = this.limit*PUYO_SIZE) =>
     {
         this.velocity += GRAVITY;
         this.gY += this.velocity;
@@ -41,7 +49,7 @@ class Puyo{
         if(this.gY>bottom)
         {
             this.velocity = 0;
-            this.gY = bottom;
+            this.setPos(this.x, this.limit);
             return true;
         }
 
@@ -52,7 +60,7 @@ class Puyo{
     {
         let dx = (this.x * PUYO_SIZE - this.gX) * 0.25 | 0;
         let dy = (this.y * PUYO_SIZE - this.gY) * 0.25 | 0;
-        
+
         if(dx == 0)
             this.gX = this.x * PUYO_SIZE;
         if(dy == 0)

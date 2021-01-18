@@ -3,8 +3,8 @@ class MultPuyos{
     {
         this.mainPiece = piece1;
         this.subPiece = piece2;
-        this.subPiece.setPos(3,0);
-        this.rotation = 1;
+        this.subPiece.setPos(2,-1)
+        this.rotation = 0;
         this.tempRotation = 0;
     }
 
@@ -18,30 +18,23 @@ class MultPuyos{
             color2: this.subPiece.type,
             dx: XY_OFFSETS[this.rotation][0],
             dy: XY_OFFSETS[this.rotation][1],
+
+            rotation: this.rotation
         }
         return data;
     }
 
     rotate = (rotation) =>
     {
-        switch(rotation)
-        {
-            case 0:
-                break;
-            case 1:
-                //anticlockwise
-                break;
-            case 2:
-                //double
-                break;
-        }
+        this.rotation += rotation;
+        if(this.rotation<0) this.rotation+= 4;
+        this.rotation = this.rotation%4;
     }
 
     move = (x = 0,y = 0) =>
     {
         if(x===0&&y===0)console.error(`CAUTION: x,y not passed`);
 
-        console.log(x,y);
         this.mainPiece.movePos(x,y);
         this.subPiece.movePos(x,y);
     }
