@@ -23,62 +23,54 @@ class Board{
         let x = data.x;
         let y = data.y;
 
-        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT)
-        {
-            console.log(`test 1`)
-            return false
-        }
-        if(this.table[y][x] != color){
-            console.log(`test 2`)
-            return false;
-        }
+        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return false
+        if(this.table[y][x] != color) return false;
 
         x += data.dx;
         y += data.dy;
 
-        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT)
-        {
-            console.log(`test 3`)
-            return false
-        }
-        if(this.table[y][x]!=color)
-        {
-            console.log(`test 4`)
-            return false;
-        }
+        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return false
+        if(this.table[y][x] != color) return false;
 
         return true;
+    }
+
+    getState = (x, y) =>
+    {
+        y++;
+        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return PUYO_STATE.N; 
+
+        let order = 'UDLR'
+        let temp = "";
+        let color = this.table[y][x];
+
+        for(let i = 0; i<4; i++)
+        {
+            let nx = x + DX_DY[i][0];
+            let ny = y + DX_DY[i][1];
+
+            if(nx<0||nx>BOARD_WIDTH||ny>=BOARD_HEIGHT||ny<0) continue;
+            if(this.table[ny][nx] == color) temp += order.charAt(i);
+        }
+
+        if(temp.length == 0) temp = `N` 
+
+        return PUYO_STATE[temp];
     }
 
     validRotation = (x, y, direction) =>
     {
-        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT)
-        {
-            console.log(`test 1`)
-            return false
-        }
-        if(this.table[y][x] != color){
-            console.log(`test 2`)
-            return false;
-        }
+        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return false
+        if(this.table[y][x] != color) return false;
 
-        x += XY_OFFSETS[direction][0];
-        y += XY_OFFSETS[direction][1];
+        x += XY_OFFSETS[direction][0];PUYO_STATE
+        y += XY_OFFSETS[direction][1];PUYO_STATE
 
-        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT)
-        {
-            console.log(`test 3`)
-            return false
-        }
-        if(this.table[y][x]!=color)
-        {
-            console.log(`test 4`)
-            return false;
-        }
+        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return false
+        if(this.table[y][x] != color) return false;
 
         return true;
     }
-
 
     lockMult = (data) =>
     {
@@ -111,7 +103,7 @@ class Board{
         this.table[puyo.y][puyo.x] = puyo.type
     };
 
-    CALC = () => {
+    calc = () => {
         let arr = [];
 
         let visited = [[]];
@@ -127,25 +119,26 @@ class Board{
 
         for(let i = 1; i<BOARD_HEIGHT;i++)
         {
-            for(let j = 0; j<BOARD_WITH; j++)
+            for(let j = 0; j<BOARD_WIDTH; j++)
             {
-                if(!visited[i][j] && this.table[i][j]!=PUYO_TYPE.EMPTY)
+                if(!visited[i][j] && this.table[i][j] != PUYO_TYPE.EMPTY)
                 {
-                    let temp = this.BFS(j,i,visited);
-                    if(temp.length>=4)
-                        arr.push(temp)
+                    let temp = this.bfs(j,i,visited);
+                    if(temp.length >= 4) arr = arr.concat(temp)
                 }
             }
         }
         return arr;
     }
 
-    BFS = (x,y,visited) => {
+    bfs = (x,y,visited) => {
         let queue = [];
         let route = [];
 
         queue.push({x,y});
         route.push({x,y});
+
+        visited[y][x] = true;
 
         while(queue.length!=0)
         {
@@ -164,20 +157,21 @@ class Board{
                 if(this.table[ty][tx] == this.table[y][x])
                 {
                     queue.push({x:tx,y:ty});
-                    route.push({x:tx,y:ty});
+                    route.push({x:tx,y:ty,color:this.table[ty][tx]});
 
                     visited[ty][tx] = true;
                 }
             }
         }
-
         return route;
     }
 
-    POP = () => {}
-
-
-
+    pop = (arr) => {
+        for(let puyo of arr)
+        {
+            this.table[puyo.y][puyo.x] = PUYO_TYPE.EMPTY; 
+        }
+    }
 
     fall = () =>
     {

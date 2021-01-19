@@ -4,6 +4,7 @@ class View{
         this.board = board;
         this.puyoArr = [];
         this.drawBoard();
+        this.popFrame = 0;
     }
 
     addPuyo = puyo => this.puyoArr.push(puyo);
@@ -32,7 +33,7 @@ class View{
                     let color = this.board.table[j][i]
                     this.drawPuyoByPointer(i,j-1,color,STAGE);
                 }
-                STAGE.strokeRect(i*PUYO_SIZE,(j-1)*PUYO_SIZE,PUYO_SIZE,PUYO_SIZE)
+                //STAGE.strokeRect(i*PUYO_SIZE,(j-1)*PUYO_SIZE,PUYO_SIZE,PUYO_SIZE)
             }
         }
     }
@@ -67,6 +68,61 @@ class View{
         }
         return counter>0
     }
+
+    popCycle = (arr) =>
+    {
+        if(arr.length==0) return true;
+        console.log(this.popFrame++);
+
+        let frame = 7
+        SPRITE.clearRect(0,0,1024,786);
+        for(let pos of arr)
+        {
+            const x = pos.x;
+            const y = pos.y;
+            const color = pos.color;
+
+            if( this.popFrame < frame*1)
+            {
+                console.log(x,y,color, POP_SPRITE[color]);
+                this.drawPuyo({
+                    gX: x*PUYO_SIZE,
+                    gY: y*PUYO_SIZE,
+                    type: POP_SPRITE[color][0],
+                    state: POP_SPRITE[color][1],
+                }, SPRITE)
+            }
+            else if (this.popFrame < frame*2)
+            {
+                this.drawPuyo({
+                    gX: x*PUYO_SIZE,
+                    gY: y*PUYO_SIZE,
+                    type: POP_SPRITE[color][0],
+                    state: POP_SPRITE[color][1]+1,
+                }, SPRITE)
+            }
+            else if (this.popFrame < frame*3)
+            {
+                this.drawPuyo({
+                    gX: x*PUYO_SIZE,
+                    gY: y*PUYO_SIZE,
+                    type: 10,
+                    state: 6+color*2
+                }, SPRITE)
+            }
+            else if (this.popFrame < frame*4)
+            {
+                this.drawPuyo({
+                    gX: x*PUYO_SIZE,
+                    gY: y*PUYO_SIZE,
+                    type: 10,
+                    state: 6+color*2+1
+                }, SPRITE)
+            }
+        }
+        return this.popFrame>frame*5
+    }
+
     drawPuyo = (puyo, ctx) =>
     {
         let type = puyo.type;
@@ -94,7 +150,7 @@ class View{
     {
         let type = color;
 
-        let state = PUYO_STATE.N;
+        let state = this.board.getState(x,y);
 
         if(type==PUYO_TYPE.EMPTY) return;
         if(type==PUYO_TYPE.TRASH)

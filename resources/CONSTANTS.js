@@ -56,9 +56,10 @@ const PHASE =
     FALL: 2,
     FALL_ANIMATION: 3,
     FALL_ANIMATION_END: 4,
-    POP: 5,
-    POP_ANIMATION:6,
-    NEW_PUYO:7,
+    CALC: 5,
+    POP:6,
+    POP_ANIMATION:7,
+    NEW_PUYO:8,
 
 
     GAME_OVER:99
@@ -81,6 +82,24 @@ const DIRECTION = Object.freeze(
         RIGHT: [1,0],
         DOWN:  [0,1]
     }
+);
+
+const POP_SPRITE = Object.freeze(
+[
+    [9,11],     //R
+    [9,13],     //G
+    [10,0],     //B
+    [10,2],     //P
+    [10,5]      //Y
+]);
+
+const DX_DY = Object.freeze(
+    [
+        [ 0,-1],
+        [ 0, 1],
+        [-1, 0],
+        [ 1, 0]
+    ]
 );
 
 // IMAGE

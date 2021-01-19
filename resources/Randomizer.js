@@ -7,7 +7,8 @@ class Randomizer{
     getPuyo = index =>
     {
         if(this.puyos.length<index+3) this.addPuyo();
-        return this.puyos[index];
+        return 0o00
+        //return this.puyos[index];
     }
 
     addPuyo = () =>
