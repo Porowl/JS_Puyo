@@ -72,9 +72,9 @@ class View{
     popCycle = (arr) =>
     {
         if(arr.length==0) return true;
-        console.log(this.popFrame++);
+        this.popFrame++;
 
-        let frame = 7
+        let frame = 4;
         SPRITE.clearRect(0,0,1024,786);
         for(let pos of arr)
         {
@@ -84,7 +84,6 @@ class View{
 
             if( this.popFrame < frame*1)
             {
-                console.log(x,y,color, POP_SPRITE[color]);
                 this.drawPuyo({
                     gX: x*PUYO_SIZE,
                     gY: y*PUYO_SIZE,

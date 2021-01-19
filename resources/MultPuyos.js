@@ -29,6 +29,25 @@ class MultPuyos{
         this.rotation += rotation;
         if(this.rotation<0) this.rotation+= 4;
         this.rotation = this.rotation%4;
+
+        let x = 0; let y = 0;
+        switch(this.rotation)
+        {
+            case 0:
+                x = 1; y = -1;
+                break;
+            case 1:
+                x = 1; y = 1    ;
+                break;
+            case 2:
+                x = -1; y = 1;
+                break;
+            case 3:
+                x = -1; y = -1;
+                break;
+        }
+
+        this.subPiece.movePos(x,y)
     }
 
     move = (x = 0,y = 0) =>

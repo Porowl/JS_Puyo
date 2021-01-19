@@ -80,7 +80,10 @@ const DIRECTION = Object.freeze(
         NONE:  [0,0],
         LEFT:  [-1,0],
         RIGHT: [1,0],
-        DOWN:  [0,1]
+        DOWN:  [0,1],
+        UP: [0,-1],
+        CW: 1,
+        ACW: -1
     }
 );
 
@@ -89,8 +92,8 @@ const POP_SPRITE = Object.freeze(
     [9,11],     //R
     [9,13],     //G
     [10,0],     //B
-    [10,2],     //P
-    [10,5]      //Y
+    [10,2],     //Y
+    [10,4]      //P
 ]);
 
 const DX_DY = Object.freeze(

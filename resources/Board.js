@@ -58,17 +58,25 @@ class Board{
         return PUYO_STATE[temp];
     }
 
-    validRotation = (x, y, direction) =>
+    validRotation = (data, direction=direction.CW) =>
     {
+        let x = data.x;
+        let y = data.y;
+        let rotation = data.rotation;
+        rotation = (rotation + 4 + direction)%4;
+
         if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return false
-        if(this.table[y][x] != color) return false;
+        if(this.table[y][x] != PUYO_TYPE.EMPTY) return false;
 
-        x += XY_OFFSETS[direction][0];PUYO_STATE
-        y += XY_OFFSETS[direction][1];PUYO_STATE
+        let dx = XY_OFFSETS[rotation][0];
+        let dy = XY_OFFSETS[rotation][1];
 
-        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return false
-        if(this.table[y][x] != color) return false;
+        let nx = x + dx;
+        let ny = y + dy;
 
+        if(nx<0||nx>BOARD_WIDTH||ny>=BOARD_HEIGHT||ny<0) return false
+        if(this.table[ny][nx] != PUYO_TYPE.EMPTY) return false
+        
         return true;
     }
 
@@ -135,8 +143,10 @@ class Board{
         let queue = [];
         let route = [];
 
+        const color = this.table[y][x];
+
         queue.push({x,y});
-        route.push({x,y});
+        route.push({x,y,color});
 
         visited[y][x] = true;
 
@@ -154,10 +164,10 @@ class Board{
                     continue;
                 }
 
-                if(this.table[ty][tx] == this.table[y][x])
+                if(this.table[ty][tx] == color)
                 {
                     queue.push({x:tx,y:ty});
-                    route.push({x:tx,y:ty,color:this.table[ty][tx]});
+                    route.push({x:tx,y:ty,color});
 
                     visited[ty][tx] = true;
                 }
