@@ -4,7 +4,8 @@ class Puyo{
         this.type = type;
         this.initPos();
         this.velocity = 0;
-        this.remove = false;
+        this.direction = DIRECTION.CW;
+        this.rotation = 0;
         this.onRotate = false;
         this.angle = 0;
         this.state = PUYO_STATE.N;
@@ -41,12 +42,12 @@ class Puyo{
     /**
      * Returns true if fall completed;
      */
-    fall = (bottom = this.limit*PUYO_SIZE) =>
+    fall = () =>
     {
         this.velocity += GRAVITY;
         this.gY += this.velocity;
 
-        if(this.gY>bottom)
+        if(this.gY>this.limit*PUYO_SIZE)
         {
             this.velocity = 0;
             this.setPos(this.x, this.limit);
@@ -68,5 +69,20 @@ class Puyo{
 
         this.gX += dx;
         this.gY += dy;
+    }
+
+    moveRotate(x,y)
+    {
+        if(this.onRotate)
+        {
+            this.angle += Math.PI/2/5 * this.direction;
+            this.angle = this.angle % (Math.PI*2);
+            this.gX = x+Math.sin(this.angle)*PUYO_SIZE
+            this.gY = y-Math.cos(this.angle)*PUYO_SIZE 
+            let targetAngle = Math.PI/2 * this.rotation;
+            if(Math.abs(this.angle-targetAngle)<0.001) this.onRotate = false;
+        } else {
+            this.move();
+        }
     }
 }

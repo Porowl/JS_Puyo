@@ -3,7 +3,7 @@ class MultPuyos{
     {
         this.mainPiece = piece1;
         this.subPiece = piece2;
-        this.subPiece.setPos(2,-1)
+        this.subPiece.setPos(2,-1);
         this.rotation = 0;
         this.tempRotation = 0;
     }
@@ -19,35 +19,36 @@ class MultPuyos{
             dx: XY_OFFSETS[this.rotation][0],
             dy: XY_OFFSETS[this.rotation][1],
 
-            rotation: this.rotation
+            rotation: this.rotation,
+            tempRotation: this.tempRotation
         }
         return data;
     }
 
-    rotate = (rotation) =>
+    rotate = (rotation,kick) =>
     {
-        this.rotation += rotation;
-        if(this.rotation<0) this.rotation+= 4;
-        this.rotation = this.rotation%4;
-
-        let x = 0; let y = 0;
-        switch(this.rotation)
+        switch(kick)
         {
-            case 0:
-                x = 1; y = -1;
+            case KICK.DONT_PUSH:
                 break;
-            case 1:
-                x = 1; y = 1    ;
+            case KICK.PUSH_LEFT:
+                this.move(-1,0);
                 break;
-            case 2:
-                x = -1; y = 1;
+            case KICK.PUSH_RIGHT:
+                this.move(1,0);
                 break;
-            case 3:
-                x = -1; y = -1;
+            case KICK.PUSH_UP:
+                this.move(0,-1);
                 break;
         }
 
-        this.subPiece.movePos(x,y)
+        this.rotation = (this.rotation+4+rotation+this.tempRotation)%4;
+        this.tempRotation = 0;
+        
+        this.subPiece.setPos(this.mainPiece.x+XY_OFFSETS[this.rotation][0],
+                            this.mainPiece.y+XY_OFFSETS[this.rotation][1]);
+        this.subPiece.rotation = this.rotation;
+        this.subPiece.onRotate = true;
     }
 
     move = (x = 0,y = 0) =>
@@ -56,5 +57,10 @@ class MultPuyos{
 
         this.mainPiece.movePos(x,y);
         this.subPiece.movePos(x,y);
+    }
+
+    toggleTempRotation = () =>
+    {
+        this.tempRotation = this.tempRotation ^ 1
     }
 }

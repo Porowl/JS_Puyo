@@ -34,10 +34,12 @@ class PuyoPlayer{
 
                 else if(event.keyCode == 38) setTimeout(()=>
                 {
-                    if(this.Board.validRotation(this.Puyo.getPos(),DIRECTION.CW))
+                    let result = this.Board.validRotation(this.Puyo.getPos(),DIRECTION.CW)
+                    if(result==KICK.NO_ROTATION)
                     {
-                        this.Puyo.rotate(DIRECTION.CW);
+                        if(this.Puyo.rotation%2==0) this.Puyo.tempRotation = 1;
                     }
+                    else this.Puyo.rotate(DIRECTION.CW, result);
                 },0)
             }
             //this.Stats.keyMap[event.keyCode] = true;
@@ -51,14 +53,14 @@ class PuyoPlayer{
 
     cycle = () =>
     {
-        console.log(`Current Phase is: ${this.phase}`);
+        //console.log(`Current Phase is: ${this.phase}`);
         switch(this.phase)
         {
             case PHASE.DROP:
             {
                 this.View.moveCycle();
                 this.frame++;
-                if(this.frame%50===0)
+                if(this.frame%8===0)
                 {
                     if(this.Board.valid(this.Puyo.getPos(DIRECTION.DOWN)))
                         this.Puyo.move(0,1);

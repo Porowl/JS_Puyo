@@ -83,9 +83,20 @@ const DIRECTION = Object.freeze(
         DOWN:  [0,1],
         UP: [0,-1],
         CW: 1,
-        ACW: -1
+        ACW: -1,
+        DOUBLE: 2
     }
 );
+
+const KICK = Object.freeze(
+{
+    NO_ROTATION: -1,
+    DONT_PUSH: 0,
+    PUSH_LEFT: 1,
+    PUSH_RIGHT: 2,
+    PUSH_UP: 3,
+    DOUBLE_ROTATION:4
+});
 
 const POP_SPRITE = Object.freeze(
 [

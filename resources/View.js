@@ -33,7 +33,7 @@ class View{
                     let color = this.board.table[j][i]
                     this.drawPuyoByPointer(i,j-1,color,STAGE);
                 }
-                //STAGE.strokeRect(i*PUYO_SIZE,(j-1)*PUYO_SIZE,PUYO_SIZE,PUYO_SIZE)
+                STAGE.strokeRect(i*PUYO_SIZE,(j-1)*PUYO_SIZE,PUYO_SIZE,PUYO_SIZE)
             }
         }
     }
@@ -46,7 +46,7 @@ class View{
         let sub = this.puyoArr.subPiece
         
         main.move();
-        sub.move();
+        sub.moveRotate(main.gX,main.gY);
 
         this.drawPuyo(main, SPRITE);
         this.drawPuyo(sub, SPRITE);

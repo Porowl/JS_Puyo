@@ -35,49 +35,40 @@ class Board{
         return true;
     }
 
-    getState = (x, y) =>
-    {
-        y++;
-        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return PUYO_STATE.N; 
-
-        let order = 'UDLR'
-        let temp = "";
-        let color = this.table[y][x];
-
-        for(let i = 0; i<4; i++)
-        {
-            let nx = x + DX_DY[i][0];
-            let ny = y + DX_DY[i][1];
-
-            if(nx<0||nx>BOARD_WIDTH||ny>=BOARD_HEIGHT||ny<0) continue;
-            if(this.table[ny][nx] == color) temp += order.charAt(i);
-        }
-
-        if(temp.length == 0) temp = `N` 
-
-        return PUYO_STATE[temp];
-    }
-
     validRotation = (data, direction=direction.CW) =>
     {
-        let x = data.x;
-        let y = data.y;
-        let rotation = data.rotation;
+
+        let rotation = data.rotation + data.tempRotation;
         rotation = (rotation + 4 + direction)%4;
 
-        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return false
-        if(this.table[y][x] != PUYO_TYPE.EMPTY) return false;
+        let check = {...data, 
+                dx:XY_OFFSETS[rotation][0],
+                dy:XY_OFFSETS[rotation][1],
+                rotation: rotation
+            }
 
-        let dx = XY_OFFSETS[rotation][0];
-        let dy = XY_OFFSETS[rotation][1];
+        if(this.valid(check)) return (data.tempRotation==1)?KICK.DOUBLE_ROTATION:KICK.DONT_PUSH;
 
-        let nx = x + dx;
-        let ny = y + dy;
+        let opp = (rotation+2)%4;
 
-        if(nx<0||nx>BOARD_WIDTH||ny>=BOARD_HEIGHT||ny<0) return false
-        if(this.table[ny][nx] != PUYO_TYPE.EMPTY) return false
-        
-        return true;
+        if(opp===2) return KICK.NO_ROTATION;
+
+        check.x += XY_OFFSETS[opp][0];
+        check.y += XY_OFFSETS[opp][1];
+
+        if(this.valid(check))
+        {
+            switch(rotation)
+            {
+                case 1:
+                    return KICK.PUSH_LEFT;
+                case 2:
+                    return KICK.PUSH_UP;
+                case 3:
+                    return KICK.PUSH_RIGHT;
+            }
+        } 
+        else return KICK.NO_ROTATION;
     }
 
     lockMult = (data) =>
@@ -95,18 +86,18 @@ class Board{
         if(x==2&&y==0) return false;
 
         this.table[y][x] = data.color1;
-        console.log(`locking ${data.color1} at (${x},${y})`)
+        //console.log(`locking ${data.color1} at (${x},${y})`)
 
         x += data.dx;
         y += data.dy;
-        console.log(`locking ${data.color2} at (${x},${y})`)
+        //console.log(`locking ${data.color2} at (${x},${y})`)
         
         this.table[y][x] = data.color2;
         return true;
     }
     
     lockSingle = (puyo) => {
-        console.log(`locking ${puyo.type} at (${puyo.x},${puyo.y})`)
+        //console.log(`locking ${puyo.type} at (${puyo.x},${puyo.y})`)
 
         this.table[puyo.y][puyo.x] = puyo.type
     };
@@ -176,7 +167,8 @@ class Board{
         return route;
     }
 
-    pop = (arr) => {
+    pop = (arr) =>
+    {
         for(let puyo of arr)
         {
             this.table[puyo.y][puyo.x] = PUYO_TYPE.EMPTY; 
@@ -209,12 +201,10 @@ class Board{
                         this.table[y][x] = PUYO_TYPE.EMPTY;
 
                         let puyo = new Puyo(color);
+
                         puyo.setPos(x,y);
-
-                        console.log(`new dropping puyo type ${color} at (${x},${y}) to (${x},${lowest})`)
-
+                        //console.log(`new dropping puyo type ${color} at (${x},${y}) to (${x},${lowest})`)
                         puyo.setLimit(lowest--);
-
                         xArr.push(puyo);
                     }
                 }
@@ -222,5 +212,28 @@ class Board{
             puyos.push(xArr);
         }
         return puyos;
+    }
+
+    getState = (x, y) =>
+    {
+        y++;
+        if(x<0||x>BOARD_WIDTH||y>=BOARD_HEIGHT||y<0) return PUYO_STATE.N; 
+
+        let order = 'UDLR'
+        let temp = "";
+        let color = this.table[y][x];
+
+        for(let i = 0; i<4; i++)
+        {
+            let nx = x + DX_DY[i][0];
+            let ny = y + DX_DY[i][1];
+
+            if(nx<0||nx>BOARD_WIDTH||ny>=BOARD_HEIGHT||ny<0) continue;
+            if(this.table[ny][nx] == color) temp += order.charAt(i);
+        }
+
+        if(temp.length == 0) temp = `N` 
+
+        return PUYO_STATE[temp];
     }
 }
