@@ -32,14 +32,23 @@ class PuyoPlayer{
                     }
                 },0)
 
-                else if(event.keyCode == 38) setTimeout(()=>
+                else if(event.keyCode == 38||event.keyCode == 90) setTimeout(()=>
                 {
-                    let result = this.Board.validRotation(this.Puyo.getPos(),DIRECTION.CW)
+                    let dir = event.keyCode==38?DIRECTION.CW:DIRECTION.ACW
+                    let result = this.Board.validRotation(this.Puyo.getPos(),dir)
                     if(result==KICK.NO_ROTATION)
                     {
                         if(this.Puyo.rotation%2==0) this.Puyo.tempRotation = 1;
                     }
-                    else this.Puyo.rotate(DIRECTION.CW, result);
+                    else this.Puyo.rotate(dir, result);
+                },0)
+
+                else if(event.keyCode == 40) setTimeout(()=>
+                {
+                    if(this.Board.valid(this.Puyo.getPos(DIRECTION.DOWN)))
+                    {
+                        this.Puyo.move(0,1);
+                    }
                 },0)
             }
             //this.Stats.keyMap[event.keyCode] = true;

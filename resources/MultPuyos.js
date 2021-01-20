@@ -25,7 +25,7 @@ class MultPuyos{
         return data;
     }
 
-    rotate = (rotation,kick) =>
+    rotate = (direction,kick) =>
     {
         switch(kick)
         {
@@ -42,12 +42,13 @@ class MultPuyos{
                 break;
         }
 
-        this.rotation = (this.rotation+4+rotation+this.tempRotation)%4;
+        this.rotation = (this.rotation + 4 + direction + this.tempRotation)%4;
         this.tempRotation = 0;
         
         this.subPiece.setPos(this.mainPiece.x+XY_OFFSETS[this.rotation][0],
                             this.mainPiece.y+XY_OFFSETS[this.rotation][1]);
         this.subPiece.rotation = this.rotation;
+        this.subPiece.direction = direction;
         this.subPiece.onRotate = true;
     }
 

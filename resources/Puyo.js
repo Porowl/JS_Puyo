@@ -76,7 +76,7 @@ class Puyo{
         if(this.onRotate)
         {
             this.angle += Math.PI/2/5 * this.direction;
-            this.angle = this.angle % (Math.PI*2);
+            this.angle = (this.angle+Math.PI*2) % (Math.PI*2);
             this.gX = x+Math.sin(this.angle)*PUYO_SIZE
             this.gY = y-Math.cos(this.angle)*PUYO_SIZE 
             let targetAngle = Math.PI/2 * this.rotation;
