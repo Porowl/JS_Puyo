@@ -5,7 +5,7 @@ class PuyoPlayer{
         this.Board = new Board();
         this.Stats = new Stats(user, randomizer);
         this.Puyo = {};
-        this.popArr = [];
+        this.popArr = {arr:[]};
         this.View = new View(this.Board);
 
         this.phase = PHASE.NEW_PUYO;
@@ -133,10 +133,12 @@ class PuyoPlayer{
             case PHASE.POP:
             {
                 this.View.popFrame = 0;
-                if(this.popArr.length>0)
+                if(this.popArr.arr.length>0)
                 {
-                    this.Board.pop(this.popArr);
+                    this.Stats.calcScore(this.popArr);
+                    this.Board.pop(this.popArr.arr);
                     this.View.drawBoard();
+
                     this.phase++;
                 }
                 else this.phase = PHASE.NEW_PUYO; 
@@ -145,14 +147,14 @@ class PuyoPlayer{
 
             case PHASE.POP_ANIMATION:
             {
-                if(this.View.popCycle(this.popArr)) this.phase++;
+                if(this.View.popCycle(this.popArr.arr)) this.phase++;
                 break;
             }
 
             case PHASE.NEW_PUYO:
             {
-                if(this.popArr.length>0){this.phase = PHASE.FALL; break;}
-                this.popArr.length = 0;
+                if(this.popArr.arr.length>0){this.phase = PHASE.FALL; break;}
+                this.Stats.resetChain();
                 this.Puyo = this.Stats.getPuyo();
 
                 this.View.emptyArray();

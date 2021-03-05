@@ -65,6 +65,9 @@ const PHASE =
     GAME_OVER:99
 }
 
+const GROUP_SIZE_BONUS = Object.freeze([0,0,0,0,0,2,3,4,5,6,7,10]);
+const CHAIN_BONUS = Object.freeze([   0,   8,  16,  32,  64,  96, 128, 160, 192, 224, 256, 288, 320, 352, 384, 416, 448, 480, 512]);
+const COLOR_BONUS = Object.freeze([0,3,6,12,24]);
 
 const XY_OFFSETS = Object.freeze(
     [
@@ -73,7 +76,7 @@ const XY_OFFSETS = Object.freeze(
         [ 0, 1],
         [-1, 0]
     ]
-)
+);
 
 const DIRECTION = Object.freeze(
     {

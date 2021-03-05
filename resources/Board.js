@@ -104,9 +104,10 @@ class Board{
 
     calc = () => {
         let arr = [];
-
         let visited = [[]];
-        
+        let colors = [];
+        let max = 0;
+
         for(let i = 1; i<BOARD_HEIGHT;i++)
         {
             visited.push([]);
@@ -123,11 +124,25 @@ class Board{
                 if(!visited[i][j] && this.table[i][j] != PUYO_TYPE.EMPTY)
                 {
                     let temp = this.bfs(j,i,visited);
-                    if(temp.length >= 4) arr = arr.concat(temp)
+                    if(temp.length >= 4) {
+                        if(temp.length > max) {
+                            max = temp.length;
+                        }    
+                        let color = this.table[temp[0]['y']][temp[0]['x']];
+                        if(!colors.includes(color)) {
+                            colors.push(color);
+                        }
+                        arr = arr.concat(temp)
+                    } 
                 }
             }
         }
-        return arr;
+
+        return {
+            arr,
+            max,
+            colors:colors.length
+        };
     }
 
     bfs = (x,y,visited) => {
